@@ -14,32 +14,26 @@ class StreamCreate extends React.Component {
         }
     }
 
-    renderInput({input, label, meta }) {
-        // const {value, onChange} = formProps.input;
-        // return (
-        // <input
-        //     onChange={formProps.input.onChange}
-        //     value={formProps.input.value}
-        // /> )
+    renderInput = ({input, label, meta }) => {
+        const className = `field ${meta.error && meta.touched ? 'error': ''}`
         return ( 
-            <div className="ui container">
+            <div className={className}>
                 <label>{label}</label>
-                <input {...input} autoComplere='off'/>
-                {this.renderError(meta)}
+                <input autoComplete='off' {...input} />
+                    {this.renderError(meta)}
             </div>
             )
     }
 
     onFormSubmit = (formValue) => {
         // event.preventDefault();
-        console.log(formValue);
         this.props.createStream(formValue);
     }
 
     render() {
         console.log("the props are",this.props);
         return (
-            <form onSubmit={this.props.handleSubmit(this.onFormSubmit)} className= "ui form">
+            <form onSubmit={this.props.handleSubmit(this.onFormSubmit)} className= "ui form error">
                 <Field name='title' component={this.renderInput} label= "Enter Title" />
                 <Field name='description' component={this.renderInput} label= "Enter description" />
                 <button className="ui button primary">Submit</button>
@@ -48,8 +42,23 @@ class StreamCreate extends React.Component {
     }
 };
 
+const validate = formValues => {
+    const errors = {};
+  
+    if (!formValues.title) {
+      errors.title = 'You must enter a title';
+    }
+  
+    if (!formValues.description) {
+      errors.description = 'You must enter a description';
+    }
+  
+    return errors;
+  };
+
 const formWrapper =  reduxForm({
-    form: 'streamCreate'
+    form: 'streamCreate',
+    validate
 })(StreamCreate);
 
 export default connect (null, {createStream})(formWrapper)
