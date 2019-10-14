@@ -6,7 +6,7 @@ class GoogleAuth extends React.Component {
     componentDidMount() {
         try {
             window.gapi.load('client:auth2', () => {
-                console.log("I am loaded");
+                // console.log("I am loaded");
                 window.gapi.client.init({
                     clientId: '1095304880445-r10lgvd25lm97jn1jn25p3v5op8tt1gj.apps.googleusercontent.com',
                     scope: 'email'
@@ -48,7 +48,7 @@ class GoogleAuth extends React.Component {
     }
 
     render() {
-        console.log("the props are ",this.props);
+        // console.log("the props are ",this.props);
         return <div>{this.renderAuthButton()}</div>
     }
 }
