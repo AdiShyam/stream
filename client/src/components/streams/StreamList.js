@@ -1,6 +1,7 @@
 import React from 'react'
-import { connect }from 'react-redux';
-import { fetchStreams } from '../../actions/';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { fetchStreams} from '../../actions/';
 
 class StreamList extends React.Component {
 
@@ -8,32 +9,69 @@ class StreamList extends React.Component {
         this.props.fetchStreams();
     }
 
+    renderAdmin(stream) {
+        if (stream.userId === this.props.currentUserId) {
+            return (
+                <div className="right floated content">
+                    <Link
+                        to = {`/streams/edit/${stream.id}`}
+                        className="ui button primary"
+                        onClick={() => {  }}
+                    > Edit </Link>
+                    <Link
+                        to = {`/streams/delete/${stream.id}`}
+                        className="ui button negative"
+                        onClick={() => {  }}
+                    > Delete </Link>
+                </div>
+            );
+        }
+    }
+
     renderList() {
         return this.props.streams.map((stream) => {
-            return (<div className='item' key={stream.id}>
-                <i className="large middle aligned icon camera" />
-                <div className="content">
-                    {stream.title}
-                    <div className="description">
-                        {stream.description}
+            return (
+                <div className='item' key={stream.id}>
+                    {this.renderAdmin(stream)}
+                    <i className="large middle aligned icon camera" />
+                    <div className="content">
+                        {stream.title}
+                        <div className="description">
+                            {stream.description}
+                        </div>
                     </div>
                 </div>
-            </div>)
+            )
         });
     }
 
-    render () {
-        console.log(this.props.streams);
+    renderCreate() {
+        if (this.props.isSignedIn) {
+            return (
+                <div style={{ textAlign: 'right' }}>
+                    <Link to='/streams/new' className='ui button primary'> Creat Stream</Link>
+                </div>
+            )
+
+        }
+    }
+
+    render() {
         return (
-            <div className="ui celled list">
-            {this.renderList()}
+            <div>
+                <div className="ui celled list"> {this.renderList()}</div>
+                <div>{this.renderCreate()}</div>
             </div>
         )
     }
 }
 
-const mapStateToPstreamsrops = state => {
-    return {streams: Object.values(state.streams)}
+const mapStateToProps = state => {
+    return {
+        streams: Object.values(state.streams),
+        currentUserId: state.auth.userId,
+        isSignedIn: state.auth.isSignedIn
+    }
 }
 
-export default connect(mapStateToPstreamsrops, { fetchStreams })(StreamList);
+export default connect(mapStateToProps, { fetchStreams })(StreamList);
